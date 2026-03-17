@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: secureauth-db
+    environment:
+      POSTGRES_DB: secureauthdb
+      POSTGRES_USER: secureauth
+      POSTGRES_PASSWORD: secureauth123
+    ports:
+      - "5434:5432"
+    volumes:
+      - secureauth_data:/var/lib/postgresql/data
+
+volumes:
+  secureauth_data:

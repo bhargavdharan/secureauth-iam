@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: secureauth-iam
+
+  profiles:
+    active: local
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: ${PORT:8080}
+
+---
+# Development Profile (H2)
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:mem:secureauthdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+---
+# Local UAT Profile (Docker PostgreSQL)
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:postgresql://localhost:5434/secureauthdb
+    driver-class-name: org.postgresql.Driver
+    username: secureauth
+    password: secureauth123
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+---
+# Production Profile (PostgreSQL)
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:secureauthdb}
+    driver-class-name: org.postgresql.Driver
+    username: ${PGUSER:secureauth}
+    password: ${PGPASSWORD:secureauth}
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+---
+# Application Config (all profiles)
+app:
+  jwt:
+    secret: ${JWT_SECRET:c2VjdXJlYXV0aC1pYW0tc3VwZXItc2VjcmV0LWtleS1mb3ItZGV2ZWxvcG1lbnQtb25seS1jaGFuZ2UtaW4tcHJvZA==}
+    access-token-expiration: 900000
+    refresh-token-expiration: 604800000
+
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}

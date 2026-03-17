@@ -1,0 +1,13 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "jdk21", "maven"]
+
+[phases.build]
+cmds = [
+    "cd frontend && npm ci && npm run build",
+    "mkdir -p backend/src/main/resources/static",
+    "cp -r frontend/dist/* backend/src/main/resources/static/",
+    "cd backend && mvn clean package -DskipTests"
+]
+
+[start]
+cmd = "java -jar backend/target/secureauth-iam-1.0.0.jar --spring.profiles.active=prod"

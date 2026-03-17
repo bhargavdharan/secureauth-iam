@@ -4,6 +4,7 @@ WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
+ARG CACHEBUST=1
 RUN npm run build
 
 # Stage 2: Build backend
